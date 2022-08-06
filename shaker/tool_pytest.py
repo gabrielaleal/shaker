@@ -9,6 +9,9 @@ class Pytest(BaseTool):
         requirements_file = Path(self.directory / "requirements.txt")
         pipfile = Path(self.directory / "Pipfile")
 
+        print("Pytest tool setup")
+        import pdb; pdb.set_trace()
+
         if requirements_file.exists():
             print(f"> Installing requirements from requirements.txt...")
             command = "pip install -r requirements.txt"
