@@ -18,18 +18,20 @@ def main(args):
     # Environment setup
     directory = Path(args.directory)
     extra_arguments = args.extra_arguments
-    output_folder = Path(
-        args.output_folder if args.output_folder else "./output")
+    output_folder = Path(args.output_folder if args.output_folder else "./output")
     no_stress_runs = args.no_stress_runs
     stress_runs = args.stress_runs
     config_file = Path(__file__).parent / "stressConfigurations.json"
     specific_tests_path = args.specific_tests_path
+    project_url = args.project_url
 
     with open(config_file) as json_file:
         configs = json.load(json_file)
 
     # Construct tool object and set it up
-    tool = tools[args.tool](directory, extra_arguments, configs, output_folder, specific_tests_path)
+    tool = tools[args.tool](
+        directory, extra_arguments, configs, output_folder, specific_tests_path, project_url
+    )
 
     logging.basicConfig(level=logging.DEBUG)
     logging.info(
@@ -44,6 +46,8 @@ def main(args):
 
     for i in range(0, stress_runs):
         tool.stress(i)
+
+    tool.tear_down()
 
     # Show results
     failures = failure_parser.parse(output_folder)
@@ -64,8 +68,7 @@ if __name__ == "__main__":
         "tool", choices=["pytest", "maven"], help="specify testing tool"
     )
     parser.add_argument("directory", help="specify directory")
-    parser.add_argument("-e", "--extra-arguments",
-                        help="specify extra arguments")
+    parser.add_argument("-e", "--extra-arguments", help="specify extra arguments")
     parser.add_argument("-o", "--output-folder", help="specify output folder")
     parser.add_argument(
         "-sr",
@@ -86,6 +89,12 @@ if __name__ == "__main__":
         "-stp",
         "--specific-tests-path",
         help="specify the path of the test you want Shaker to run",
+    )
+
+    parser.add_argument(
+        "-pu",
+        "--project-url",
+        help="Project's Git web url",
     )
 
     args = parser.parse_args()

@@ -5,13 +5,14 @@ from util import subprocess_Popen
 
 
 class BaseTool:
-    def __init__(self, directory, extra_arguments, configs, output_folder, specific_tests_path):
+    def __init__(self, directory, extra_arguments, configs, output_folder, specific_tests_path, project_url):
         self.directory = directory
         self.extra_arguments = extra_arguments
         self.configs = configs
         self.output_folder = output_folder
         self.stress_ng_process = None
         self.specific_tests_path = specific_tests_path
+        self.project_url = project_url
 
         # Clear the output folder
         shutil.rmtree(self.output_folder, ignore_errors=True)
@@ -52,4 +53,7 @@ class BaseTool:
         pass
 
     def run_tests(self, report_folder):
+        pass
+
+    def tear_down(self):
         pass
